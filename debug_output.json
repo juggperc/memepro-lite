@@ -1,0 +1,125 @@
+{
+  "manifold": {
+    "id": "jJLS1jpoPyiXBscPlQQ9",
+    "creatorId": "flSHQ6wvpYU7W5V32WzOPnz8lyI3",
+    "creatorUsername": "DaniQin",
+    "creatorName": "Dani Qin",
+    "createdTime": 1666805355228,
+    "creatorAvatarUrl": "https://lh3.googleusercontent.com/a/ALm5wu2LCuvyJJOzPRg8uZHd-5WLb6NvEJtjm_ifaiVm=s96-c",
+    "closeTime": 1666966104431,
+    "question": "Will destiny cover any politics content before Oct 31 2022?",
+    "slug": "will-destiny-cover-any-politics-con",
+    "url": "https://manifold.markets/DaniQin/will-destiny-cover-any-politics-con",
+    "pool": {
+      "NO": 3911.498603939276,
+      "YES": 2926.128237002288
+    },
+    "probability": 0.5773651107525184,
+    "p": 0.5054312197347138,
+    "totalLiquidity": 3380,
+    "outcomeType": "BINARY",
+    "mechanism": "cpmm-1",
+    "volume": 853.4522531271048,
+    "volume24Hours": 0,
+    "isResolved": true,
+    "resolution": "YES",
+    "resolutionTime": 1666966104431,
+    "resolutionProbability": 0.5773651107525184,
+    "uniqueBettorCount": 16,
+    "lastUpdatedTime": 1666936878839,
+    "lastBetTime": 1666936877478,
+    "lastCommentTime": 1666919511279,
+    "token": "MANA"
+  },
+  "kalshi": {
+    "can_close_early": true,
+    "close_time": "2026-01-31T02:30:00Z",
+    "created_time": "2026-01-17T05:04:51.236145Z",
+    "custom_strike": {
+      "Associated Events": "KXNBASPREAD-26JAN16MINHOU,KXNFLGAME-26JAN17BUFDEN,KXNFLGAME-26JAN18HOUNE,KXNFLGAME-26JAN18SFSEA,KXNFLSPREAD-26JAN18LACHI",
+      "Associated Market Sides": "yes,yes,yes,yes,no",
+      "Associated Markets": "KXNBASPREAD-26JAN16MINHOU-HOU6,KXNFLGAME-26JAN17BUFDEN-BUF,KXNFLGAME-26JAN18HOUNE-HOU,KXNFLGAME-26JAN18SFSEA-SEA,KXNFLSPREAD-26JAN18LACHI-LA7",
+      "Multivariate Event Ticker": "KXMVESPORTSMULTIGAMEEXTENDED-R"
+    },
+    "event_ticker": "KXMVESPORTSMULTIGAMEEXTENDED-S2025B31812646EA",
+    "expected_expiration_time": "2026-01-18T23:00:00Z",
+    "expiration_time": "2026-01-31T02:30:00Z",
+    "expiration_value": "",
+    "is_provisional": true,
+    "last_price": 0,
+    "last_price_dollars": "0.0000",
+    "latest_expiration_time": "2026-01-31T02:30:00Z",
+    "liquidity": 0,
+    "liquidity_dollars": "0.0000",
+    "market_type": "binary",
+    "mve_collection_ticker": "KXMVESPORTSMULTIGAMEEXTENDED-R",
+    "mve_selected_legs": [
+      {
+        "event_ticker": "KXNBASPREAD-26JAN16MINHOU",
+        "market_ticker": "KXNBASPREAD-26JAN16MINHOU-HOU6",
+        "side": "yes"
+      },
+      {
+        "event_ticker": "KXNFLGAME-26JAN17BUFDEN",
+        "market_ticker": "KXNFLGAME-26JAN17BUFDEN-BUF",
+        "side": "yes"
+      },
+      {
+        "event_ticker": "KXNFLGAME-26JAN18HOUNE",
+        "market_ticker": "KXNFLGAME-26JAN18HOUNE-HOU",
+        "side": "yes"
+      },
+      {
+        "event_ticker": "KXNFLGAME-26JAN18SFSEA",
+        "market_ticker": "KXNFLGAME-26JAN18SFSEA-SEA",
+        "side": "yes"
+      },
+      {
+        "event_ticker": "KXNFLSPREAD-26JAN18LACHI",
+        "market_ticker": "KXNFLSPREAD-26JAN18LACHI-LA7",
+        "side": "no"
+      }
+    ],
+    "no_ask": 100,
+    "no_ask_dollars": "1.0000",
+    "no_bid": 100,
+    "no_bid_dollars": "1.0000",
+    "no_sub_title": "yes Houston wins by over 6.5 Points,yes Buffalo,yes Houston,yes Seattle,no Los Angeles R wins by over 7.5 points",
+    "notional_value": 100,
+    "notional_value_dollars": "1.0000",
+    "open_interest": 0,
+    "open_time": "2026-01-17T05:04:51.207916Z",
+    "previous_price": 0,
+    "previous_price_dollars": "0.0000",
+    "previous_yes_ask": 0,
+    "previous_yes_ask_dollars": "0.0000",
+    "previous_yes_bid": 0,
+    "previous_yes_bid_dollars": "0.0000",
+    "price_level_structure": "deci_cent",
+    "price_ranges": [
+      {
+        "end": "1.0000",
+        "start": "0.0000",
+        "step": "0.0010"
+      }
+    ],
+    "response_price_units": "usd_cent",
+    "result": "",
+    "rules_primary": "",
+    "rules_secondary": "",
+    "settlement_timer_seconds": 600,
+    "status": "active",
+    "strike_type": "custom",
+    "subtitle": "",
+    "tick_size": 1,
+    "ticker": "KXMVESPORTSMULTIGAMEEXTENDED-S2025B31812646EA-522F19DDB9F",
+    "title": "yes Houston wins by over 6.5 Points,yes Buffalo,yes Houston,yes Seattle,no Los Angeles R wins by over 7.5 points",
+    "volume": 0,
+    "volume_24h": 0,
+    "yes_ask": 0,
+    "yes_ask_dollars": "0.0000",
+    "yes_bid": 0,
+    "yes_bid_dollars": "0.0000",
+    "yes_sub_title": "yes Houston wins by over 6.5 Points,yes Buffalo,yes Houston,yes Seattle,no Los Angeles R wins by over 7.5 points"
+  }
+}

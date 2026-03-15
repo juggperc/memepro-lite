@@ -48,11 +48,9 @@ export function FilterPanel({ filters, onFiltersChange, onReset }: FilterPanelPr
                                 className="w-full px-2 py-1.5 text-xs bg-black border border-[#222] text-white focus:outline-none focus:border-[#444]"
                             >
                                 <option value="marketCap">Market Cap</option>
-                                <option value="volume">24h Volume</option>
-                                <option value="holders">Holders</option>
                                 <option value="age">Age</option>
                                 <option value="progress">Progress</option>
-                                <option value="txCount">Transaction Count</option>
+                                <option value="replies">Replies</option>
                             </select>
                         </div>
 
@@ -72,29 +70,19 @@ export function FilterPanel({ filters, onFiltersChange, onReset }: FilterPanelPr
                             />
                         </div>
 
-                        {/* Holders */}
+                        {/* Age */}
                         <div className="grid grid-cols-2 gap-2">
                             <FilterInput
-                                label="Min Holders"
-                                value={filters.minHolders}
-                                onChange={(v) => onFiltersChange({ minHolders: v })}
+                                label="Min Age (m)"
+                                value={filters.minAge}
+                                onChange={(v) => onFiltersChange({ minAge: v })}
                                 placeholder="0"
                             />
                             <FilterInput
-                                label="Max Top10%"
-                                value={filters.maxTop10Percent}
-                                onChange={(v) => onFiltersChange({ maxTop10Percent: v })}
-                                placeholder="100"
-                            />
-                        </div>
-
-                        {/* Creator */}
-                        <div className="grid grid-cols-2 gap-2">
-                            <FilterInput
-                                label="Max Dev%"
-                                value={filters.maxDevPercent}
-                                onChange={(v) => onFiltersChange({ maxDevPercent: v })}
-                                placeholder="100"
+                                label="Max Age (m)"
+                                value={filters.maxAge}
+                                onChange={(v) => onFiltersChange({ maxAge: v })}
+                                placeholder="∞"
                             />
                         </div>
 
@@ -178,9 +166,8 @@ function countActiveFilters(filters: TokenFilters): number {
     let count = 0;
     if (filters.minMarketCap) count++;
     if (filters.maxMarketCap) count++;
-    if (filters.minHolders) count++;
-    if (filters.maxTop10Percent) count++;
-    if (filters.maxDevPercent) count++;
+    if (filters.minAge) count++;
+    if (filters.maxAge) count++;
     if (filters.dexPaidOnly) count++;
     if (filters.hasSocialsOnly) count++;
     return count;

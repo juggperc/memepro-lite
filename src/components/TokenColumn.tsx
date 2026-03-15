@@ -38,9 +38,9 @@ function useSortedWithFavorites(tokens: Token[], favorites: string[]) {
 
 const SORT_OPTIONS = [
     { value: 'marketCap', label: 'Market Cap' },
-    { value: 'volume', label: 'Volume' },
-    { value: 'holders', label: 'Holders' },
     { value: 'age', label: 'Age' },
+    { value: 'progress', label: 'Progress' },
+    { value: 'replies', label: 'Replies' },
 ] as const;
 
 export function TokenColumn({

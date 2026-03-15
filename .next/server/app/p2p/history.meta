@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/p2p/layout,_N_T_/p2p/history/layout,_N_T_/p2p/history/page,_N_T_/p2p/history"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/p2p/history/__PAGE__",
+    "/p2p/history",
+    "/p2p",
+    "/_index",
+    "/_head"
+  ]
+}

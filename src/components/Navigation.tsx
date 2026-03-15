@@ -58,11 +58,6 @@ export function Navigation() {
                             `}
                         >
                             {tab.name}
-                            {tab.badge && (
-                                <span className="badge badge-success text-[8px] uppercase">
-                                    {tab.badge}
-                                </span>
-                            )}
                         </Link>
                     );
                 })}

@@ -1,0 +1,189 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/api/holders/[mint]",
+      "regex": "^/api/holders/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPmint": "nxtPmint"
+      },
+      "namedRegex": "^/api/holders/(?<nxtPmint>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/lobbies/[id]/cancel",
+      "regex": "^/api/p2p/lobbies/([^/]+?)/cancel(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/p2p/lobbies/(?<nxtPid>[^/]+?)/cancel(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/lobbies/[id]/join",
+      "regex": "^/api/p2p/lobbies/([^/]+?)/join(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/api/p2p/lobbies/(?<nxtPid>[^/]+?)/join(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/game/flip",
+      "regex": "^/api/p2p/game/flip(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/game/flip(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/history",
+      "regex": "^/api/p2p/history(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/history(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/leaderboard",
+      "regex": "^/api/p2p/leaderboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/leaderboard(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/lobbies",
+      "regex": "^/api/p2p/lobbies(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/lobbies(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/payment/payout",
+      "regex": "^/api/p2p/payment/payout(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/payment/payout(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/payment/refund",
+      "regex": "^/api/p2p/payment/refund(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/payment/refund(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/payment/status",
+      "regex": "^/api/p2p/payment/status(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/payment/status(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/payment/verify-deposit",
+      "regex": "^/api/p2p/payment/verify\\-deposit(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/payment/verify\\-deposit(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/stats",
+      "regex": "^/api/p2p/stats(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/stats(?:/)?$"
+    },
+    {
+      "page": "/api/p2p/transactions/history",
+      "regex": "^/api/p2p/transactions/history(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/p2p/transactions/history(?:/)?$"
+    },
+    {
+      "page": "/api/price",
+      "regex": "^/api/price(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/price(?:/)?$"
+    },
+    {
+      "page": "/api/tokens",
+      "regex": "^/api/tokens(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/tokens(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/p2p",
+      "regex": "^/p2p(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/p2p(?:/)?$"
+    },
+    {
+      "page": "/p2p/history",
+      "regex": "^/p2p/history(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/p2p/history(?:/)?$"
+    },
+    {
+      "page": "/portfolio",
+      "regex": "^/portfolio(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/portfolio(?:/)?$"
+    },
+    {
+      "page": "/settings",
+      "regex": "^/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/settings(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

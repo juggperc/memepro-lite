@@ -1,0 +1,11 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/_global-error/page.js")
+R.c("server/chunks/ssr/[root-of-the-server]__78ee4d4b._.js")
+R.c("server/chunks/ssr/Projects_memepro-lite_e61213a8._.js")
+R.c("server/chunks/ssr/7c271_next_dist_3d7728c2._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__12695c64._.js")
+R.c("server/chunks/ssr/7c271_2264c96f._.js")
+R.c("server/chunks/ssr/7c271_next_dist_38e3eaa5._.js")
+R.c("server/chunks/ssr/Projects_memepro-lite_src_app_1c12a1e7._.js")
+R.c("server/chunks/ssr/7e210_memepro-lite__next-internal_server_app__global-error_page_actions_0f3bdb66.js")
+R.m(35677)
+module.exports=R.m(35677).exports

@@ -70,7 +70,6 @@ function generateMockToken(
             : rand(8, 50, seed + 8);
 
     const tokenInfo = TOKEN_DATA[index % TOKEN_DATA.length];
-    const priceChange1h = rand(-25, 65, seed + 9);
 
     return {
         mint: `${tokenInfo.symbol.toLowerCase()}${index}${status}mint`,
@@ -83,29 +82,12 @@ function generateMockToken(
         marketCapUsd,
         priceUsd: marketCapUsd / 1_000_000_000,
         priceSol: marketCapSol / 1_000_000_000,
-        priceChange1h,
-        priceChange24h: rand(-40, 150, seed + 10),
 
         bondingCurveProgress,
         virtualSolReserves: rand(8, 70, seed + 11),
         virtualTokenReserves: rand(100_000_000, 800_000_000, seed + 12),
 
-        volume24h: marketCapUsd * rand(0.4, 2.5, seed + 13),
-        volumeSol: marketCapSol * rand(0.4, 2.5, seed + 14),
-        txCount: randInt(25, 400, seed + 15),
-        buyCount: randInt(18, 300, seed + 16),
-        sellCount: randInt(7, 120, seed + 17),
-
-        holderCount: status === 'new'
-            ? randInt(15, 120, seed + 18)
-            : status === 'finalStretch'
-                ? randInt(120, 450, seed + 19)
-                : randInt(350, 1800, seed + 20),
-        top10HolderPercent: rand(22, 65, seed + 21),
-        devHoldingPercent: rand(0, 12, seed + 22),
-        snipersPercent: rand(0, 18, seed + 23),
-        insidersPercent: rand(0, 12, seed + 24),
-        bundledPercent: rand(0, 8, seed + 25),
+        replyCount: randInt(25, 400, seed + 15),
 
         createdAt,
         creator: `creator${index}wallet`,

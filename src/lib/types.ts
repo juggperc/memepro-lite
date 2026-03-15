@@ -13,28 +13,14 @@ export interface Token {
   marketCapUsd: number;
   priceUsd: number;
   priceSol: number;
-  priceChange1h: number;
-  priceChange24h: number;
 
   // Bonding Curve
   bondingCurveProgress: number; // 0-100%
   virtualSolReserves: number;
   virtualTokenReserves: number;
 
-  // Trading Metrics
-  volume24h: number;
-  volumeSol: number;
-  txCount: number;
-  buyCount: number;
-  sellCount: number;
-
-  // Holder Analytics
-  holderCount: number;
-  top10HolderPercent: number;
-  devHoldingPercent: number;
-  snipersPercent: number;
-  insidersPercent: number;
-  bundledPercent: number;
+  // Metrics (Real only)
+  replyCount: number;
 
   // Metadata
   createdAt: number; // Unix timestamp
@@ -49,48 +35,6 @@ export interface Token {
   dexPaid: boolean;
 }
 
-export interface AlgoScore {
-  overall: number; // 0-100
-  confidence: 'HIGH' | 'MEDIUM' | 'LOW';
-  verdict: 'BULLISH' | 'NEUTRAL' | 'BEARISH' | 'RISKY';
-  factors: ScoreFactor[];
-}
-
-export interface ScoreFactor {
-  name: string;
-  score: number; // 0-100
-  weight: number; // 0-1
-  reason: string;
-  sentiment: 'positive' | 'neutral' | 'negative';
-}
-
-export interface PumpDumpAnalysis {
-  isPotentialPumpDump: boolean;
-  riskLevel: 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'EXTREME';
-  signals: PumpDumpSignal[];
-  recommendation: string;
-}
-
-export interface PumpDumpSignal {
-  type: 'volume_spike' | 'wallet_cluster' | 'creator_dump' | 'parabolic_price' | 'low_mcap_activity' | 'no_socials';
-  severity: 'warning' | 'danger';
-  description: string;
-}
-
-export interface ProfitAnalysis {
-  potential: 'HIGH' | 'MEDIUM' | 'LOW' | 'AVOID';
-  targetGain: string;
-  riskReward: string;
-  timing: string;
-  reasoning: string[];
-}
-
-export interface TokenWithAnalysis extends Token {
-  algoScore: AlgoScore;
-  pumpDumpAnalysis: PumpDumpAnalysis;
-  profitAnalysis: ProfitAnalysis;
-}
-
 // Filter types matching Axiom's Pulse filters
 export interface TokenFilters {
   // Basic
@@ -98,33 +42,17 @@ export interface TokenFilters {
   maxMarketCap?: number;
   minAge?: number; // minutes
   maxAge?: number;
-  minVolume?: number;
-  minTxCount?: number;
-
-  // Holders
-  minHolders?: number;
-  maxTop10Percent?: number;
-  maxDevPercent?: number;
-
-  // Risk Detection
-  maxSnipersPercent?: number;
-  maxInsidersPercent?: number;
-  maxBundledPercent?: number;
 
   // Quality
   dexPaidOnly?: boolean;
   hasSocialsOnly?: boolean;
-
-  // Algorithm
-  minAlgoScore?: number;
-  hideFlagged?: boolean;
 
   // Search
   keywords?: string;
   excludeKeywords?: string;
 
   // Sorting
-  sortBy?: 'algoScore' | 'marketCap' | 'age' | 'holders' | 'progress' | 'profitPotential';
+  sortBy?: 'marketCap' | 'age' | 'progress' | 'replies';
   sortOrder?: 'asc' | 'desc';
 }
 
@@ -188,16 +116,4 @@ export interface MigrationEvent {
   symbol: string;
   poolAddress: string;
   timestamp: number;
-}
-
-export interface PredictionMarket {
-  id: string;
-  source: 'manifold' | 'kalshi';
-  question: string;
-  image?: string;
-  probability: number; // 0-100
-  volume: number; // USD
-  url: string;
-  providerLogo: string;
-  options?: { name: string; probability: number }[];
 }

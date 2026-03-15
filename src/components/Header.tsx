@@ -39,8 +39,8 @@ export function Header() {
         <>
             <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[var(--border)]">
                 <div className="flex items-center gap-3">
-                    <div className="text-[var(--text-lg)] font-semibold tracking-tight">
-                        meme<span className="text-[var(--muted-foreground)]">.pro</span>
+                    <div className="text-[var(--text-lg)] font-semibold tracking-tight text-white">
+                        memepro<span className="text-[var(--muted-foreground)]">.lite</span>
                     </div>
                 </div>
 

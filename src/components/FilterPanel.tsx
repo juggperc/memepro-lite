@@ -31,7 +31,7 @@ export function FilterPanel({ filters, onFiltersChange, onReset }: FilterPanelPr
                 <>
                     <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
 
-                    <div className="absolute top-full right-0 mt-2 w-64 bg-black border border-[#222] z-50 p-3 space-y-3">
+                    <div className="absolute top-full right-0 mt-2 w-64 bg-black border border-[#222] z-50 p-3 space-y-3 shadow-2xl">
                         <div className="flex items-center justify-between text-xs">
                             <span className="text-white font-medium">Filters</span>
                             <button onClick={onReset} className="text-[#555] hover:text-white transition-colors">
@@ -39,8 +39,25 @@ export function FilterPanel({ filters, onFiltersChange, onReset }: FilterPanelPr
                             </button>
                         </div>
 
+                        {/* Sorting */}
+                        <div className="space-y-1">
+                            <label className="text-[10px] text-[#555] block">Sort By</label>
+                            <select
+                                value={filters.sortBy}
+                                onChange={(e) => onFiltersChange({ sortBy: e.target.value as any })}
+                                className="w-full px-2 py-1.5 text-xs bg-black border border-[#222] text-white focus:outline-none focus:border-[#444]"
+                            >
+                                <option value="marketCap">Market Cap</option>
+                                <option value="volume">24h Volume</option>
+                                <option value="holders">Holders</option>
+                                <option value="age">Age</option>
+                                <option value="progress">Progress</option>
+                                <option value="txCount">Transaction Count</option>
+                            </select>
+                        </div>
+
                         {/* Market Cap */}
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="grid grid-cols-2 gap-2 pt-1">
                             <FilterInput
                                 label="Min MC"
                                 value={filters.minMarketCap}
@@ -71,7 +88,7 @@ export function FilterPanel({ filters, onFiltersChange, onReset }: FilterPanelPr
                             />
                         </div>
 
-                        {/* Risk */}
+                        {/* Creator */}
                         <div className="grid grid-cols-2 gap-2">
                             <FilterInput
                                 label="Max Dev%"
@@ -79,26 +96,10 @@ export function FilterPanel({ filters, onFiltersChange, onReset }: FilterPanelPr
                                 onChange={(v) => onFiltersChange({ maxDevPercent: v })}
                                 placeholder="100"
                             />
-                            <FilterInput
-                                label="Min Score"
-                                value={filters.minAlgoScore}
-                                onChange={(v) => onFiltersChange({ minAlgoScore: v })}
-                                placeholder="0"
-                            />
                         </div>
 
                         {/* Toggles */}
                         <div className="space-y-2 pt-2 border-t border-[#222]">
-                            <div className="group relative">
-                                <FilterToggle
-                                    label="Hide flagged"
-                                    checked={filters.hideFlagged ?? true}
-                                    onChange={(v) => onFiltersChange({ hideFlagged: v })}
-                                />
-                                <div className="absolute bottom-full left-0 mb-2 w-48 p-2 bg-[#111] border border-[#333] text-[10px] text-[#888] rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                                    Filters tokens with suspicious developer clusters, potential rug-pull patterns, or known scam metadata.
-                                </div>
-                            </div>
                             <FilterToggle
                                 label="Has socials"
                                 checked={filters.hasSocialsOnly ?? false}
@@ -113,9 +114,9 @@ export function FilterPanel({ filters, onFiltersChange, onReset }: FilterPanelPr
 
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="w-full py-1.5 text-[10px] border border-white text-white hover:bg-white hover:text-black transition-colors"
+                            className="w-full py-2 text-[10px] bg-white text-black font-bold hover:bg-white/90 transition-colors mt-2"
                         >
-                            Apply
+                            Apply Filters
                         </button>
                     </div>
                 </>
@@ -180,7 +181,6 @@ function countActiveFilters(filters: TokenFilters): number {
     if (filters.minHolders) count++;
     if (filters.maxTop10Percent) count++;
     if (filters.maxDevPercent) count++;
-    if (filters.minAlgoScore) count++;
     if (filters.dexPaidOnly) count++;
     if (filters.hasSocialsOnly) count++;
     return count;

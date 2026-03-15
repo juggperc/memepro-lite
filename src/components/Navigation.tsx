@@ -13,11 +13,7 @@ export function Navigation() {
     const tabs = [
         { name: 'Stream', path: '/' },
         { name: 'Portfolio', path: '/portfolio' },
-        { name: 'Perpetuals', path: '/perpetuals' },
-        { name: 'Pseudo', path: '/pseudo', badge: 'BETA' },
         { name: 'Settings', path: '/settings' },
-        { name: 'Puntbit', path: 'https://puntbit.vercel.app/lobby', badge: 'BETA' },
-        { name: 'Research', path: 'https://silkrisk.vercel.app/', badge: 'BETA' },
     ];
 
     const updateFades = () => {

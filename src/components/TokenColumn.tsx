@@ -1,24 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import type { TokenWithAnalysis, TokenFilters } from '@/lib/types';
+import type { Token, TokenFilters } from '@/lib/types';
 import { TokenCard } from './TokenCard';
 import { FilterPanel } from './FilterPanel';
-import { AlgorithmTransparencyModal } from './AlgorithmTransparencyModal';
 import { NoResultsIcon } from './EmptyStateIcons';
 import { useFavoritesStore } from '@/stores/favoritesStore';
 
 interface TokenColumnProps {
     title: string;
-    tokens: TokenWithAnalysis[];
+    tokens: Token[];
     filters: TokenFilters;
     onFiltersChange: (filters: Partial<TokenFilters>) => void;
     onFiltersReset: () => void;
-    onTokenSelect: (token: TokenWithAnalysis) => void;
+    onTokenSelect: (token: Token) => void;
     selectedMint?: string;
 }
 
-function useTokenSearch(tokens: TokenWithAnalysis[], searchTerm: string) {
+function useTokenSearch(tokens: Token[], searchTerm: string) {
     if (!searchTerm.trim()) return tokens;
     const term = searchTerm.toLowerCase();
     return tokens.filter(t =>
@@ -27,7 +26,7 @@ function useTokenSearch(tokens: TokenWithAnalysis[], searchTerm: string) {
     );
 }
 
-function useSortedWithFavorites(tokens: TokenWithAnalysis[], favorites: string[]) {
+function useSortedWithFavorites(tokens: Token[], favorites: string[]) {
     return [...tokens].sort((a, b) => {
         const aFav = favorites.includes(a.mint);
         const bFav = favorites.includes(b.mint);
@@ -38,9 +37,10 @@ function useSortedWithFavorites(tokens: TokenWithAnalysis[], favorites: string[]
 }
 
 const SORT_OPTIONS = [
-    { value: 'algoScore', label: 'Algo Score' },
-    { value: 'profitPotential', label: 'Profit Potential' },
     { value: 'marketCap', label: 'Market Cap' },
+    { value: 'volume', label: 'Volume' },
+    { value: 'holders', label: 'Holders' },
+    { value: 'age', label: 'Age' },
 ] as const;
 
 export function TokenColumn({
@@ -54,7 +54,7 @@ export function TokenColumn({
 }: TokenColumnProps) {
     const [showSort, setShowSort] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
-    const currentSort = filters.sortBy || 'algoScore';
+    const currentSort = filters.sortBy || 'marketCap';
     const { favorites } = useFavoritesStore();
 
     const searchedTokens = useTokenSearch(allTokens, searchTerm);
@@ -86,13 +86,8 @@ export function TokenColumn({
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search..."
-                        className="hidden sm:block w-20 lg:w-24 input text-[10px] py-1.5"
+                        className="hidden sm:block w-20 lg:w-24 px-2 py-1 text-[10px] bg-black border border-[var(--border)] text-white focus:outline-none"
                     />
-                    {title === 'New Pairs' && (
-                        <div className="ml-2 pl-2 border-l border-[var(--border)]">
-                            <AlgorithmTransparencyModal />
-                        </div>
-                    )}
                 </div>
 
                 <div className="flex items-center gap-2">

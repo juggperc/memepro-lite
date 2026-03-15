@@ -8,13 +8,13 @@ import { TokenDetail } from '@/components/TokenDetail';
 import { useTokenData } from '@/hooks/useTokenData';
 import { useTokenAnalysis, useFilteredTokens } from '@/hooks/useTokenAnalysis';
 import { useFilterStore } from '@/stores/filterStore';
-import type { TokenWithAnalysis } from '@/lib/types';
+import type { Token } from '@/lib/types';
 import { PatchNotesModal } from '@/components/PatchNotesModal';
 import { KeyboardHelp } from '@/components/KeyboardHelp';
 
 export default function Home() {
   const { data, isLoading, error } = useTokenData();
-  const [selectedToken, setSelectedToken] = useState<TokenWithAnalysis | null>(null);
+  const [selectedToken, setSelectedToken] = useState<Token | null>(null);
 
   const {
     newPairsFilters,
@@ -96,8 +96,8 @@ export default function Home() {
       <Header />
       <Navigation />
 
-      <main className="flex-1">
-        <div className="w-full bg-[var(--background-secondary)] border-b border-[var(--border)] px-4 py-2.5 flex items-center justify-center gap-2">
+      <main className="flex-1 overflow-hidden">
+        <div className="w-full bg-[var(--background-secondary)] border-b border-[var(--border)] px-4 py-2 flex items-center justify-center gap-2 shrink-0">
           <span className="text-emerald-500 text-[var(--text-xs)]">ℹ️</span>
           <span className="text-[var(--text-xs)] text-[var(--muted)]">
             <span className="text-white font-medium">Transparency Notice:</span> We charge a 0.5% platform fee on trades over $50. Lowest in the space.
@@ -114,7 +114,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          <div className="h-[calc(100vh-120px)] sm:h-[calc(100vh-100px)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <div className="h-[calc(100vh-112px)] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             <TokenColumn
               title="New Pairs"
               tokens={filteredNewPairs}

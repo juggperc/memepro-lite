@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import type { TokenWithAnalysis } from '@/lib/types';
+import type { Token } from '@/lib/types';
 import { useToast } from '@/hooks/useToast';
 import { useFavoritesStore } from '@/stores/favoritesStore';
 
 interface TokenCardProps {
-    token: TokenWithAnalysis;
-    onSelect: (token: TokenWithAnalysis) => void;
+    token: Token;
+    onSelect: (token: Token) => void;
     isSelected?: boolean;
 }
 
@@ -20,9 +20,6 @@ export function TokenCard({ token, onSelect, isSelected = false }: TokenCardProp
     const ageText = formatAge(token.createdAt);
     const ageMinutes = (Date.now() - token.createdAt) / (1000 * 60);
     const isNew = ageMinutes < 5;
-    const scoreColor = getScoreColor(token.algoScore.overall);
-    const isHighScore = token.algoScore.overall >= 80;
-    const isHotToken = Math.abs(token.priceChange1h) > 5000;
 
     const handleRightClick = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -50,9 +47,7 @@ export function TokenCard({ token, onSelect, isSelected = false }: TokenCardProp
                 relative w-full text-left p-4 bg-[var(--card)] border transition-all duration-200 group
                 ${isSelected
                     ? 'border-emerald-500 bg-emerald-500/5 shadow-[var(--shadow-glow)]'
-                    : isHotToken
-                        ? 'border-white/20 bg-white/[0.02] hot-token-wave'
-                        : 'border-[var(--border)] hover:border-[var(--border-light)] hover:bg-[var(--hover)]'
+                    : 'border-[var(--border)] hover:border-[var(--border-light)] hover:bg-[var(--hover)]'
                 }
                 ${copied ? 'border-emerald-500/50' : ''}
                 ${isFav ? 'border-l-2 border-l-yellow-500' : ''}
@@ -101,41 +96,20 @@ export function TokenCard({ token, onSelect, isSelected = false }: TokenCardProp
                             {token.dexPaid && (
                                 <span className="text-[9px] text-[var(--muted-foreground)] border border-[var(--border)] px-1.5 py-0.5 rounded">DEX</span>
                             )}
-                            {isHotToken && (
-                                <span className={`text-[9px] px-1.5 py-0.5 rounded ${token.priceChange1h > 0
-                                    ? 'bg-emerald-500/15 text-emerald-400'
-                                    : 'bg-red-500/15 text-red-400'
-                                    }`}>
-                                    🔥
-                                </span>
-                            )}
                         </div>
                         <div className="text-[var(--text-xs)] text-[var(--muted-foreground)] truncate max-w-[140px]">{token.name}</div>
                     </div>
                 </div>
-
-                <div className={`relative text-[var(--text-sm)] font-medium tabular-nums ${scoreColor}`}>
-                    {isHighScore && (
-                        <span className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping" />
-                    )}
-                    <span className="relative">{token.algoScore.overall}</span>
-                </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 mb-3">
+            <div className="grid grid-cols-2 gap-4 mb-3">
                 <div>
-                    <div className="text-[10px] text-[var(--muted-foreground)] mb-0.5 uppercase tracking-wide">MC</div>
+                    <div className="text-[10px] text-[var(--muted-foreground)] mb-0.5 uppercase tracking-wide">Market Cap</div>
                     <div className="text-white font-medium tabular-nums text-[var(--text-xs)]">${formatCompact(token.marketCapUsd)}</div>
                 </div>
                 <div>
-                    <div className="text-[10px] text-[var(--muted-foreground)] mb-0.5 uppercase tracking-wide">1h</div>
-                    <div className={`font-medium tabular-nums text-[var(--text-xs)] ${token.priceChange1h >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                        {token.priceChange1h >= 0 ? '+' : ''}{token.priceChange1h.toFixed(1)}%
-                    </div>
-                </div>
-                <div>
-                    <div className="text-[10px] text-[var(--muted-foreground)] mb-0.5 uppercase tracking-wide">Holders</div>
-                    <div className="text-white font-medium tabular-nums text-[var(--text-xs)]">{token.holderCount}</div>
+                    <div className="text-[10px] text-[var(--muted-foreground)] mb-0.5 uppercase tracking-wide">Replies</div>
+                    <div className="text-white font-medium tabular-nums text-[var(--text-xs)]">{token.replyCount}</div>
                 </div>
             </div>
 
@@ -154,17 +128,11 @@ export function TokenCard({ token, onSelect, isSelected = false }: TokenCardProp
                 </div>
             )}
 
-            {token.pumpDumpAnalysis.isPotentialPumpDump && (
-                <div className="text-[10px] text-[var(--muted-foreground)] border border-[var(--border)] px-3 py-1.5 mb-3 rounded-[var(--radius-sm)] bg-amber-500/5">
-                    ⚠ {token.pumpDumpAnalysis.riskLevel} risk · {token.pumpDumpAnalysis.signals[0]?.type.replace('_', ' ')}
-                </div>
-            )}
-
             <div className="flex items-center justify-between text-[10px] text-[var(--muted-foreground)]">
                 <div className="flex items-center gap-3">
                     <span>{ageText}</span>
-                    <span>{token.txCount} tx</span>
                     {token.twitterUrl && <span>𝕏</span>}
+                    {token.telegramUrl && <span>TG</span>}
                 </div>
                 <span className="text-[var(--border-light)] group-hover:text-[var(--muted-foreground)] transition-colors">
                     {copied ? '✓ Copied' : 'View →'}
@@ -189,10 +157,4 @@ function formatCompact(value: number): string {
     if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
     if (value >= 1_000) return `${(value / 1_000).toFixed(0)}K`;
     return value.toFixed(0);
-}
-
-function getScoreColor(score: number): string {
-    if (score >= 75) return 'text-emerald-400';
-    if (score >= 50) return 'text-white';
-    return 'text-[var(--muted-foreground)]';
 }

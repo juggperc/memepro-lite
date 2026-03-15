@@ -16,23 +16,23 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "meme.pro | Solana Trading & P2P Gaming",
-  description: "Real-time Solana memecoin analysis with pump.fun integration. Peer-to-peer crypto gaming with provably fair outcomes. No house edge - bet against real players.",
-  keywords: "solana, memecoin, pump.fun, crypto casino, p2p betting, provably fair, coinflip, dice",
-  authors: [{ name: "meme.pro" }],
+  title: "memepro.lite | Solana Trading & P2P Gaming",
+  description: "High-performance Solana dashboard for pump.fun tokens with integrated P2P gaming.",
+  keywords: "solana, memecoin, pump.fun, crypto casino, p2p betting, provably fair",
+  authors: [{ name: "memepro.lite" }],
   icons: {
     icon: "/favicon.ico",
   },
   openGraph: {
-    title: "meme.pro | Solana Trading & P2P Gaming",
-    description: "Real-time Solana analysis and provably fair P2P crypto gaming",
+    title: "memepro.lite | Solana Trading & P2P Gaming",
+    description: "High-performance Solana dashboard for pump.fun tokens.",
     type: "website",
-    siteName: "meme.pro",
+    siteName: "memepro.lite",
   },
   twitter: {
     card: "summary_large_image",
-    title: "meme.pro | Solana Trading & P2P Gaming",
-    description: "Real-time Solana analysis and provably fair P2P crypto gaming",
+    title: "memepro.lite | Solana Trading & P2P Gaming",
+    description: "High-performance Solana dashboard for pump.fun tokens.",
   },
   robots: {
     index: true,

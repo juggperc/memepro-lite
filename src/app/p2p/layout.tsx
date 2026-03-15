@@ -79,8 +79,8 @@ export default function CasinoLayout({ children }: CasinoLayoutProps) {
                             </div>
                             <div className="hidden sm:block">
                                 <div className="text-[var(--text-sm)] font-semibold">
-                                    <span className="text-white">meme</span>
-                                    <span className="text-[var(--muted-foreground)]">.pro</span>
+                                    <span className="text-white">memepro</span>
+                                    <span className="text-[var(--muted-foreground)]">.lite</span>
                                 </div>
                                 <div className="text-[9px] text-emerald-500 font-bold uppercase tracking-wider">
                                     P2P Casino
@@ -179,7 +179,7 @@ export default function CasinoLayout({ children }: CasinoLayoutProps) {
                             <div className="text-[var(--text-xs)] text-[var(--muted-foreground)] leading-relaxed">
                                 <p className="text-red-400 font-bold mb-2 uppercase tracking-wider text-[10px]">Important Risk Disclosure</p>
                                 <p className="mb-2">
-                                    <strong className="text-white">BETA SOFTWARE:</strong> meme.pro P2P Casino is experimental beta software. By using this platform, you acknowledge and accept all risks associated with blockchain transactions and peer-to-peer betting.
+                                    <strong className="text-white">BETA SOFTWARE:</strong> memepro.lite P2P Casino is experimental beta software. By using this platform, you acknowledge and accept all risks associated with blockchain transactions and peer-to-peer betting.
                                 </p>
                                 <p className="mb-2">
                                     <strong className="text-white">NO GUARANTEES:</strong> We make no guarantees regarding the reliability, availability, or security of this service. Smart contract bugs, network issues, or other unforeseen circumstances may result in loss of funds.
@@ -209,11 +209,8 @@ export default function CasinoLayout({ children }: CasinoLayoutProps) {
                             <Link href="/" className="text-[10px] text-[var(--muted-foreground)] hover:text-white transition-colors uppercase tracking-wider">
                                 Stream
                             </Link>
-                            <Link href="/perpetuals" className="text-[10px] text-[var(--muted-foreground)] hover:text-white transition-colors uppercase tracking-wider">
-                                Perpetuals
-                            </Link>
                             <span className="text-[10px] text-[var(--border)]">•</span>
-                            <span className="text-[10px] text-[var(--border)]">© 2026 meme.pro</span>
+                            <span className="text-[10px] text-[var(--border)]">© 2026 memepro.lite</span>
                         </div>
                     </div>
                 </div>

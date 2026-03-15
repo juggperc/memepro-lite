@@ -3,12 +3,12 @@
 import { useState } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-import type { TokenWithAnalysis } from '@/lib/types';
+import type { Token } from '@/lib/types';
 import { executeTrade } from '@/lib/trading/client';
 import { useSettingsStore } from '@/stores/settingsStore';
 
 interface TradeModalProps {
-    token: TokenWithAnalysis;
+    token: Token;
     onClose: () => void;
 }
 

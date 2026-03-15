@@ -1,36 +1,20 @@
 /**
  * Token Analysis Hook
  * 
- * Combines token data with algorithmic analysis
+ * Handles filtering and sorting of tokens based on real data metrics
  */
 
 import { useMemo } from 'react';
-import type { Token, TokenWithAnalysis, TokenFilters } from '@/lib/types';
-import { calculateAlgoScore } from '@/lib/algo/scoring';
-import { analyzePumpDump } from '@/lib/algo/pumpDumpDetector';
-import { analyzeProfitPotential } from '@/lib/algo/profitAnalyzer';
+import type { Token, TokenFilters } from '@/lib/types';
 
-export function useTokenAnalysis(tokens: Token[]): TokenWithAnalysis[] {
-    return useMemo(() => {
-        return tokens.map(token => {
-            const algoScore = calculateAlgoScore(token);
-            const pumpDumpAnalysis = analyzePumpDump(token);
-            const profitAnalysis = analyzeProfitPotential(token, pumpDumpAnalysis);
-
-            return {
-                ...token,
-                algoScore,
-                pumpDumpAnalysis,
-                profitAnalysis,
-            };
-        });
-    }, [tokens]);
+export function useTokenAnalysis(tokens: Token[]): Token[] {
+    return tokens;
 }
 
 export function useFilteredTokens(
-    tokens: TokenWithAnalysis[],
+    tokens: Token[],
     filters: TokenFilters
-): TokenWithAnalysis[] {
+): Token[] {
     return useMemo(() => {
         const filtered = tokens.filter(token => {
             // Basic filters
@@ -42,30 +26,12 @@ export function useFilteredTokens(
             if (filters.minAge && ageMinutes < filters.minAge) return false;
             if (filters.maxAge && ageMinutes > filters.maxAge) return false;
 
-            // Volume and transactions
-            if (filters.minVolume && token.volume24h < filters.minVolume) return false;
-            if (filters.minTxCount && token.txCount < filters.minTxCount) return false;
-
-            // Holder filters
-            if (filters.minHolders && token.holderCount < filters.minHolders) return false;
-            if (filters.maxTop10Percent && token.top10HolderPercent > filters.maxTop10Percent) return false;
-            if (filters.maxDevPercent && token.devHoldingPercent > filters.maxDevPercent) return false;
-
-            // Risk detection filters
-            if (filters.maxSnipersPercent && token.snipersPercent > filters.maxSnipersPercent) return false;
-            if (filters.maxInsidersPercent && token.insidersPercent > filters.maxInsidersPercent) return false;
-            if (filters.maxBundledPercent && token.bundledPercent > filters.maxBundledPercent) return false;
-
             // Quality filters
             if (filters.dexPaidOnly && !token.dexPaid) return false;
             if (filters.hasSocialsOnly) {
                 const hasSocials = token.twitterUrl || token.telegramUrl || token.websiteUrl;
                 if (!hasSocials) return false;
             }
-
-            // Algorithm filters
-            if (filters.minAlgoScore && token.algoScore.overall < filters.minAlgoScore) return false;
-            if (filters.hideFlagged && token.pumpDumpAnalysis.isPotentialPumpDump) return false;
 
             // Keyword search
             if (filters.keywords) {
@@ -91,35 +57,27 @@ export function useFilteredTokens(
 
         // Sort tokens
         const sortedTokens = [...filtered];
-        const sortBy = filters.sortBy || 'algoScore';
+        const sortBy = filters.sortBy || 'marketCap';
         const sortOrder = filters.sortOrder || 'desc';
 
         sortedTokens.sort((a, b) => {
             let comparison = 0;
 
             switch (sortBy) {
-                case 'algoScore':
-                    comparison = a.algoScore.overall - b.algoScore.overall;
-                    break;
                 case 'marketCap':
                     comparison = a.marketCapUsd - b.marketCapUsd;
                     break;
                 case 'age':
                     comparison = a.createdAt - b.createdAt;
                     break;
-                case 'holders':
-                    comparison = a.holderCount - b.holderCount;
-                    break;
                 case 'progress':
                     comparison = a.bondingCurveProgress - b.bondingCurveProgress;
                     break;
-                case 'profitPotential':
-                    // HIGH=4, MEDIUM=3, LOW=2, AVOID=1
-                    const potentialRank = { 'HIGH': 4, 'MEDIUM': 3, 'LOW': 2, 'AVOID': 1 };
-                    comparison = (potentialRank[a.profitAnalysis.potential] || 0) - (potentialRank[b.profitAnalysis.potential] || 0);
+                case 'replies':
+                    comparison = a.replyCount - b.replyCount;
                     break;
                 default:
-                    comparison = a.algoScore.overall - b.algoScore.overall;
+                    comparison = a.marketCapUsd - b.marketCapUsd;
             }
 
             return sortOrder === 'desc' ? -comparison : comparison;

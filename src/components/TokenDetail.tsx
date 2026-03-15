@@ -1,12 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import type { TokenWithAnalysis } from '@/lib/types';
+import type { Token } from '@/lib/types';
 import { TradeModal } from './TradeModal';
 import { useRealHolderData } from '@/hooks/useRealHolderData';
 
 interface TokenDetailProps {
-    token: TokenWithAnalysis;
+    token: Token;
     onClose: () => void;
 }
 
@@ -23,13 +23,6 @@ export function TokenDetail({ token, onClose }: TokenDetailProps) {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = token.mint;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         }
@@ -77,163 +70,111 @@ export function TokenDetail({ token, onClose }: TokenDetailProps) {
                 {/* Content */}
                 <div className="p-6 space-y-6">
                     {/* Key Metrics */}
-                    <div className="grid grid-cols-4 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
                         <Metric label="Market Cap" value={`$${formatCompact(token.marketCapUsd)}`} />
-                        <Metric label="1h Change" value={`${token.priceChange1h >= 0 ? '+' : ''}${token.priceChange1h.toFixed(1)}%`} highlight={token.priceChange1h >= 0} />
+                        <Metric label="Replies" value={token.replyCount.toString()} />
                         <Metric
-                            label="Holders"
+                            label="Holders (Live)"
                             value={realHolderData.isReal
                                 ? realHolderData.holderCount.toString()
-                                : `~${token.holderCount.toString()}`
+                                : 'Loading...'
                             }
-                            tooltip={realHolderData.isReal
-                                ? "Live on-chain holder count from Solana RPC."
-                                : "Estimated count. Click to load real on-chain data."
-                            }
+                            tooltip="Live on-chain holder count from Solana RPC."
                             highlight={realHolderData.isReal}
-                        />
-                        <Metric
-                            label="24h Vol"
-                            value={`~$${formatCompact(token.volume24h)}`}
-                            tooltip="Estimated based on market cap. Pump.fun API doesn't provide exact volume data. We're working on integrating on-chain data for accuracy. Trading is unaffected."
                         />
                     </div>
 
                     {/* Progress (if not migrated) */}
                     {token.status !== 'migrated' && (
                         <div>
-                            <div className="flex justify-between text-xs text-[#666] mb-2">
-                                <span>Bonding Curve Progress</span>
+                            <div className="flex justify-between text-xs text-[#666] mb-2 font-mono">
+                                <span className="uppercase tracking-widest">Bonding Progress</span>
                                 <span className="tabular-nums">{token.bondingCurveProgress.toFixed(1)}%</span>
                             </div>
                             <div className="h-1 bg-[#1a1a1a]">
                                 <div
-                                    className="h-full bg-white"
+                                    className="h-full bg-white transition-all duration-500"
                                     style={{ width: `${Math.min(token.bondingCurveProgress, 100)}%` }}
                                 />
                             </div>
                         </div>
                     )}
 
-                    {/* Algorithm Score */}
-                    <div className="border border-[#1a1a1a] p-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-xs text-[#666]">Algorithm Score</span>
-                            <div className="flex items-center gap-2">
-                                <span className="text-2xl font-medium text-white tabular-nums">{token.algoScore.overall}</span>
-                                <span className={`text-xs px-2 py-0.5 border ${token.algoScore.verdict === 'BULLISH' ? 'border-white text-white' :
-                                    token.algoScore.verdict === 'RISKY' ? 'border-[#666] text-[#666]' :
-                                        'border-[#444] text-[#666]'
-                                    }`}>
-                                    {token.algoScore.verdict}
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Factor Breakdown */}
-                        <div className="space-y-2">
-                            {token.algoScore.factors.slice(0, 4).map((factor, i) => (
-                                <div key={i} className="flex items-center justify-between text-xs">
-                                    <span className="text-[#666]">{factor.name}</span>
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-16 h-0.5 bg-[#1a1a1a]">
-                                            <div
-                                                className={`h-full ${factor.sentiment === 'positive' ? 'bg-white' : 'bg-[#444]'}`}
-                                                style={{ width: `${factor.score}%` }}
-                                            />
-                                        </div>
-                                        <span className="text-[#888] tabular-nums w-6 text-right">{factor.score}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
                     {/* Holder Distribution */}
                     <div>
                         <div className="flex items-center gap-2 mb-3">
-                            <span className="text-xs text-[#666]">Holder Distribution</span>
-                            {realHolderData.isReal ? (
-                                <span className="text-[9px] text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">LIVE</span>
-                            ) : realHolderData.isLoading ? (
-                                <span className="text-[9px] text-[#666] animate-pulse">Loading...</span>
-                            ) : (
-                                <InfoTooltip text="Top 10% is now sourced from live Solana blockchain data. Other metrics use algorithmic estimation based on trading patterns." />
+                            <span className="text-xs text-[#666] font-mono uppercase tracking-widest">On-Chain Intelligence</span>
+                            {realHolderData.isReal && (
+                                <span className="text-[9px] text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded font-bold">LIVE DATA</span>
                             )}
                         </div>
-                        <div className="grid grid-cols-4 gap-4 text-xs">
-                            <div>
-                                <div className="text-[#555] mb-1">Top 10</div>
-                                <div className={`tabular-nums ${realHolderData.isReal ? 'text-emerald-400' : 'text-white'}`}>
+                        <div className="grid grid-cols-2 gap-4 text-xs">
+                            <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-4">
+                                <div className="text-[#555] mb-2 text-[10px] uppercase tracking-widest">Top 10 Ownership</div>
+                                <div className={`text-2xl font-bold tabular-nums ${realHolderData.isReal ? 'text-emerald-400' : 'text-[#333]'}`}>
                                     {realHolderData.isReal
                                         ? `${realHolderData.top10Percent.toFixed(1)}%`
-                                        : `~${token.top10HolderPercent.toFixed(1)}%`
+                                        : 'PENDING'
                                     }
                                 </div>
                             </div>
-                            <div>
-                                <div className="text-[#555] mb-1">Dev</div>
-                                <div className="text-white tabular-nums">~{token.devHoldingPercent.toFixed(1)}%</div>
-                            </div>
-                            <div>
-                                <div className="text-[#555] mb-1">Snipers</div>
-                                <div className="text-white tabular-nums">~{token.snipersPercent.toFixed(1)}%</div>
-                            </div>
-                            <div>
-                                <div className="text-[#555] mb-1">Insiders</div>
-                                <div className="text-white tabular-nums">~{token.insidersPercent.toFixed(1)}%</div>
+                            <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-4">
+                                <div className="text-[#555] mb-2 text-[10px] uppercase tracking-widest">Network Status</div>
+                                <div className="text-white text-2xl font-bold uppercase tracking-widest tabular-nums">
+                                    {token.status === 'migrated' ? 'RAYDIUM' : 'PUMP.FUN'}
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Profit Analysis */}
-                    <div className="border border-[#1a1a1a] p-4">
-                        <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs text-[#666]">Profit Potential</span>
-                            <span className={`text-xs px-2 py-0.5 border ${token.profitAnalysis.potential === 'HIGH' ? 'border-white text-white' :
-                                token.profitAnalysis.potential === 'AVOID' ? 'border-[#444] text-[#555]' :
-                                    'border-[#444] text-[#888]'
-                                }`}>
-                                {token.profitAnalysis.potential}
-                            </span>
+                    {/* Description */}
+                    {token.description && (
+                        <div className="bg-[#0a0a0a] border border-[#1a1a1a] p-4">
+                            <div className="text-[#555] mb-2 text-[10px] uppercase tracking-widest">Origin</div>
+                            <p className="text-[#888] text-xs leading-relaxed italic">"{token.description}"</p>
                         </div>
-                        <div className="grid grid-cols-2 gap-4 text-xs mb-3">
-                            <div>
-                                <div className="text-[#555] mb-1">Target</div>
-                                <div className="text-white">{token.profitAnalysis.targetGain}</div>
-                            </div>
-                            <div>
-                                <div className="text-[#555] mb-1">Risk/Reward</div>
-                                <div className="text-white">{token.profitAnalysis.riskReward}</div>
-                            </div>
-                        </div>
-                        <div className="text-xs text-[#666]">{token.profitAnalysis.timing}</div>
+                    )}
+
+                    {/* Token Info */}
+                    <div className="border border-[#1a1a1a] divide-y divide-[#1a1a1a]">
+                        <InfoRow label="Contract" value={token.mint} isMono />
+                        <InfoRow label="Creator" value={token.creator} isMono />
+                        <InfoRow label="Created" value={new Date(token.createdAt).toLocaleString()} />
                     </div>
                 </div>
 
                 {/* Actions */}
-                <div className="flex border-t border-[#1a1a1a]">
+                <div className="flex border-t border-[#1a1a1a] bg-[#050505]">
                     <button
                         onClick={handleCopyCA}
-                        className="flex-1 py-3 text-xs text-[#666] hover:text-white hover:bg-[#111] transition-colors border-r border-[#1a1a1a]"
+                        className="flex-1 py-5 text-xs font-bold text-[#666] hover:text-white hover:bg-white/[0.02] transition-colors border-r border-[#1a1a1a] uppercase tracking-widest"
                     >
-                        {copied ? '✓ Copied!' : 'Copy CA'}
+                        {copied ? '✓ System Copy' : 'Copy Protocol'}
                     </button>
-                    {token.twitterUrl && (
-                        <a
-                            href={token.twitterUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 py-3 text-xs text-[#666] hover:text-white hover:bg-[#111] transition-colors border-r border-[#1a1a1a] text-center"
-                        >
-                            Twitter
-                        </a>
+                    {(token.twitterUrl || token.telegramUrl || token.websiteUrl) && (
+                        <div className="flex-1 flex divide-x divide-[#1a1a1a] border-r border-[#1a1a1a]">
+                            {token.twitterUrl && (
+                                <a href={token.twitterUrl} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center text-[#666] hover:text-white hover:bg-white/[0.02] transition-colors">
+                                    𝕏
+                                </a>
+                            )}
+                            {token.telegramUrl && (
+                                <a href={token.telegramUrl} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center text-[#666] hover:text-white hover:bg-white/[0.02] transition-colors">
+                                    TG
+                                </a>
+                            )}
+                            {token.websiteUrl && (
+                                <a href={token.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center text-[#666] hover:text-white hover:bg-white/[0.02] transition-colors">
+                                    WEB
+                                </a>
+                            )}
+                        </div>
                     )}
                     <button
                         onClick={() => setShowTrade(true)}
-                        className="flex-1 py-3 text-xs text-white bg-white/5 hover:bg-white/10 transition-colors"
+                        className="flex-1 py-5 text-xs font-bold text-white bg-white/10 hover:bg-white/15 transition-colors uppercase tracking-widest"
                     >
-                        Trade
+                        Initiate Trade
                     </button>
                 </div>
             </div>
@@ -241,48 +182,22 @@ export function TokenDetail({ token, onClose }: TokenDetailProps) {
     );
 }
 
-function InfoTooltip({ text }: { text: string }) {
-    const [show, setShow] = useState(false);
-
+function InfoRow({ label, value, isMono = false }: { label: string; value: string; isMono?: boolean }) {
     return (
-        <div
-            className="relative inline-block"
-            onMouseEnter={() => setShow(true)}
-            onMouseLeave={() => setShow(false)}
-        >
-            <span className="text-[10px] text-[#666] cursor-help">ⓘ</span>
-            {show && (
-                <div className="absolute left-0 top-5 z-50 w-64 p-3 bg-[#111] border border-[#333] text-[10px] text-[#888] leading-relaxed shadow-xl">
-                    {text}
-                </div>
-            )}
+        <div className="flex justify-between px-4 py-3 text-[10px]">
+            <span className="text-[#555] uppercase tracking-widest">{label}</span>
+            <span className={`text-[#888] ${isMono ? 'font-mono' : ''}`}>{value}</span>
         </div>
     );
 }
 
 function Metric({ label, value, highlight = false, tooltip }: { label: string; value: string; highlight?: boolean; tooltip?: string }) {
-    const [showTooltip, setShowTooltip] = useState(false);
-
     return (
         <div className="relative">
             <div className="flex items-center gap-1 mb-1">
-                <div className="text-[10px] text-[#555]">{label}</div>
-                {tooltip && (
-                    <div
-                        className="relative"
-                        onMouseEnter={() => setShowTooltip(true)}
-                        onMouseLeave={() => setShowTooltip(false)}
-                    >
-                        <span className="text-[10px] text-[#666] cursor-help">ⓘ</span>
-                        {showTooltip && (
-                            <div className="absolute left-0 top-4 z-50 w-48 p-2 bg-[#111] border border-[#333] text-[10px] text-[#888] leading-relaxed">
-                                {tooltip}
-                            </div>
-                        )}
-                    </div>
-                )}
+                <div className="text-[10px] text-[#555] uppercase tracking-widest">{label}</div>
             </div>
-            <div className={`text-sm font-medium tabular-nums ${highlight ? 'text-white' : 'text-[#888]'}`}>{value}</div>
+            <div className={`text-lg font-bold tabular-nums ${highlight ? 'text-white' : 'text-[#888]'}`}>{value}</div>
         </div>
     );
 }

@@ -27,10 +27,10 @@ const defaultFilters: TokenFilters = {
     maxBundledPercent: undefined,
     dexPaidOnly: false,
     hasSocialsOnly: false,
-    minAlgoScore: undefined,
-    hideFlagged: true, // Hide risky tokens by default
     keywords: undefined,
     excludeKeywords: undefined,
+    sortBy: 'marketCap',
+    sortOrder: 'desc',
 };
 
 export const useFilterStore = create<FilterState>()(
@@ -68,7 +68,7 @@ export const useFilterStore = create<FilterState>()(
                 }),
         }),
         {
-            name: 'meme-pro-filters',
+            name: 'memepro-lite-filters',
         }
     )
 );

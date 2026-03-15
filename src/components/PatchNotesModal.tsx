@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const PATCH_VERSION = 'v1.7.0';
+const PATCH_VERSION = 'v1.8.0';
 
 interface PatchNote {
     title: string;
@@ -13,14 +13,19 @@ interface PatchNote {
 
 const PATCH_NOTES: PatchNote[] = [
     {
-        title: 'New Navigation',
-        description: 'Renamed P2P to Puntbit and added a new Research tab for experimental features.',
+        title: 'Memepro Lite',
+        description: 'Streamlined the application for maximum performance. Removed experimental tabs.',
         type: 'new'
     },
     {
-        title: 'Visual Refinements',
-        description: 'New subtle wave effect for hot tokens. Standardized monochrome color scheme.',
-        type: 'new'
+        title: 'New Identity',
+        description: 'Rebranded to memepro.lite with a new professional logo and design tokens.',
+        type: 'update'
+    },
+    {
+        title: 'Optimized Backend',
+        description: 'Trimmed unused API endpoints and library dependencies for faster response times.',
+        type: 'update'
     },
     {
         title: 'Enhanced Security',
@@ -30,11 +35,6 @@ const PATCH_NOTES: PatchNote[] = [
     {
         title: 'Design System',
         description: 'Professional design tokens for consistent spacing, typography, and transitions.',
-        type: 'update'
-    },
-    {
-        title: 'Price Alerts',
-        description: 'Super hot tokens (>5000% change) now feature an animated wave effect.',
         type: 'update'
     },
     {
@@ -53,7 +53,7 @@ export function PatchNotesModal() {
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
-        const lastSeen = localStorage.getItem('meme_pro_patch_notes');
+        const lastSeen = localStorage.getItem('memepro_lite_patch_notes');
         if (lastSeen !== PATCH_VERSION) {
             setIsOpen(true);
         }
@@ -61,7 +61,7 @@ export function PatchNotesModal() {
 
     const handleDismiss = () => {
         setIsOpen(false);
-        localStorage.setItem('meme_pro_patch_notes', PATCH_VERSION);
+        localStorage.setItem('memepro_lite_patch_notes', PATCH_VERSION);
     };
 
     return (

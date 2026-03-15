@@ -1,6 +1,6 @@
-# meme.pro - AI Agent Documentation (v2.1)
+# memepro.lite - AI Agent Documentation (v3.0)
 
-> **Purpose**: Single source of truth for all AI agents working on meme.pro. Details architecture, features, design system, and patterns.
+> **Purpose**: Single source of truth for all AI agents working on memepro.lite. Details architecture, features, design system, and patterns.
 
 ---
 
@@ -23,13 +23,6 @@
 - **Border**: `#1a1a1a`, `#222222`
 - **Accent**: Emerald (`#10b981`), Gold (`#f59e0b`), Ruby (`#ef4444`)
 
-### Component Classes
-- `.btn-primary`, `.btn-secondary` - Button styles
-- `.card`, `.card-interactive` - Card containers
-- `.input` - Form inputs
-- `.badge`, `.badge-success/warning/danger` - Status indicators
-- `.glass`, `.glass-card` - Glassmorphism effects
-
 ---
 
 ## 2. Platform Architecture
@@ -51,7 +44,7 @@ flowchart TB
     subgraph External
         Solana[Solana RPC]
         Pump[PumpPortal API]
-        Binance[Binance API]
+        Helius[Helius API]
     end
     
     Page --> Store
@@ -59,7 +52,6 @@ flowchart TB
     Route --> RateLimit
     RateLimit --> DB
     Route --> Pump
-    Route --> Binance
     Wallet --> Solana
 ```
 
@@ -69,9 +61,9 @@ flowchart TB
 
 - `src/app/` - Next.js pages
   - `page.tsx`: Stream (main dashboard)
-  - `p2p/`: P2P casino (Puntbit)
-  - `perpetuals/`: Crypto futures
-  - `research/`: Research tab (external)
+  - `p2p/`: P2P casino
+  - `portfolio/`: User holdings
+  - `settings/`: User preferences
   - `api/`: Server-side logic
 
 - `src/components/` - UI components
@@ -98,26 +90,20 @@ All payment APIs are rate limited:
 - **Duplicate Deposit**: Prevents same player depositing twice for same lobby
 - **Duplicate Refund**: Prevents re-issuing refunds
 
-### Transaction Verification
-- On-chain verification of deposit transactions
-- Sender address validation
-- Amount tolerance: 5000 lamports (~$0.001)
-
 ---
 
 ## 5. Feature: Stream (Home)
 
 **URL**: `/`
 
-Real-time three-column feed of Solana token activity.
+Real-time three-column feed of Solana token activity using 100% real, on-chain data.
 
 ### Mechanisms
 - **Columns**: "New Pairs", "Final Stretch", "Migrated"
 - **Data Source**: `/api/tokens` (proxies PumpPortal)
-- **Live Indicators**: Pulsing green dot on "New Pairs"
+- **Real Metrics**: No heuristic "algo scores" or "risk ratings".
 - **Search**: Per-column filtering by name/symbol
 - **Keyboard**: j/k navigation, Enter to select
-- **Hot Tokens**: >5000% change highlighted purple
 
 ---
 
@@ -131,13 +117,6 @@ Peer-to-peer crypto casino with 2% platform fee.
 | Game | Odds | Payout | Status |
 |------|------|--------|--------|
 | Coinflip | 50/50 | 1.96x | Active |
-| Dice | Variable | Dynamic | Removed |
-
-### Payment Flow
-1. Create lobby → deposit to escrow
-2. Opponent joins → matches deposit
-3. Game resolves → winner paid (pot - 2%)
-4. Loser gets nothing, platform keeps fee
 
 ### Provably Fair
 - Server seed hash shown before game
@@ -146,19 +125,7 @@ Peer-to-peer crypto casino with 2% platform fee.
 
 ---
 
-## 7. Feature: Perpetuals Feed
-
-**URL**: `/perpetuals`
-
-Professional crypto data dashboard.
-
-- **Assets**: BTC, ETH, SOL, XRP, DOGE
-- **Data**: `/api/market` (proxies Binance)
-- **Charts**: TradingView lightweight-charts
-
----
-
-## 8. API Reference
+## 7. API Reference
 
 ### Payment APIs (Rate Limited)
 | Endpoint | Method | Purpose |
@@ -172,36 +139,32 @@ Professional crypto data dashboard.
 | Endpoint | Method | Purpose |
 |----------|--------|---------|
 | `/api/tokens` | GET | Token stream data |
-| `/api/market` | GET | Binance market data |
 | `/api/price` | GET | SOL price |
+| `/api/holders/[mint]` | GET | On-chain holder data |
 
 ---
 
-## 9. Agent Guidelines
+## 8. Agent Guidelines
 
 1. **Use Design System**: All UI must use CSS variables from globals.css
 2. **Strict Types**: No `any` - define interfaces in `src/lib/types.ts`
-3. **Clean Code**: No verbose comments, production-ready patterns
-4. **Error Handling**: User-friendly messages, proper logging
+3. **No Heuristics**: Only use real, verifiable data. No speculative scores.
+4. **Clean Code**: No verbose comments, production-ready patterns
 5. **Rate Limiting**: All new APIs must include rate limiting
 
 ---
 
-## 10. Environment Variables
+## 9. Environment Variables
 
 ### Required (Production)
 ```
 ESCROW_SECRET_KEY=<base64-encoded-keypair>
 NEXT_PUBLIC_ESCROW_WALLET=<escrow-public-key>
 POSTGRES_URL=<vercel-postgres-url>
-```
-
-### Optional
-```
-SOLANA_RPC_ENDPOINT=<premium-rpc-url>
-NEXT_PUBLIC_SOLANA_NETWORK=mainnet-beta
+NEXT_PUBLIC_SOLANA_RPC=<premium-rpc-url>
+NEXT_PUBLIC_HELIUS_API_KEY=<helius-api-key>
 ```
 
 ---
 
-*Documentation maintained by AI Agent System. Last Update: 2026-01-20*
+*Documentation maintained by AI Agent System. Last Update: 2026-03-15*

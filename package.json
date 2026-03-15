@@ -1,5 +1,5 @@
 {
-  "name": "meme.pro",
+  "name": "memepro-lite",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -19,7 +19,6 @@
     "autoprefixer": "^10.4.23",
     "bs58": "^6.0.0",
     "framer-motion": "^12.27.5",
-    "lightweight-charts": "^5.1.0",
     "lucide-react": "^0.562.0",
     "next": "16.1.2",
     "postcss": "^8.5.6",

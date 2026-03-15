@@ -3,11 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
-import { Connection, PublicKey } from '@solana/web3.js';
 import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
 import { TradeModal } from '@/components/TradeModal';
-import type { TokenWithAnalysis } from '@/lib/types';
+import type { Token } from '@/lib/types';
 
 interface TokenHolding {
     mint: string;
@@ -18,12 +17,12 @@ interface TokenHolding {
     valueUsd: number;
     valueSol: number;
     priceUsd: number;
+    priceSol: number;
     change24h: number;
     bondingCurveProgress: number;
     status: 'new' | 'finalStretch' | 'migrated';
 }
 
-const RPC_ENDPOINT = process.env.NEXT_PUBLIC_RPC_URL || 'https://api.mainnet-beta.solana.com';
 const HELIUS_API_KEY = process.env.NEXT_PUBLIC_HELIUS_API_KEY || 'demo';
 
 export default function PortfolioPage() {
@@ -56,7 +55,7 @@ export default function PortfolioPage() {
             setHoldings([]);
             setTotalValue({ usd: 0, sol: 0 });
         }
-    }, [connected, publicKey]);
+    }, [connected, publicKey, solPrice]);
 
     const fetchHoldings = async (walletAddress: string) => {
         setIsLoading(true);
@@ -68,7 +67,7 @@ export default function PortfolioPage() {
 
             if (response.ok) {
                 const data = await response.json();
-                // Filter for pump.fun tokens and map to holdings
+                // Filter for tokens and map to holdings
                 const tokenHoldings: TokenHolding[] = (data.tokens || [])
                     .filter((t: any) => t.amount > 0)
                     .slice(0, 20)
@@ -81,6 +80,7 @@ export default function PortfolioPage() {
                         valueUsd: (token.amount / Math.pow(10, token.decimals || 6)) * (token.price || 0),
                         valueSol: ((token.amount / Math.pow(10, token.decimals || 6)) * (token.price || 0)) / solPrice,
                         priceUsd: token.price || 0,
+                        priceSol: (token.price || 0) / solPrice,
                         change24h: token.priceChange24h || 0,
                         bondingCurveProgress: 50,
                         status: 'new' as const,
@@ -126,73 +126,74 @@ export default function PortfolioPage() {
                     <div className="max-w-4xl mx-auto">
                         {/* Portfolio Summary */}
                         <div className="border border-[#1a1a1a] p-6 mb-6">
-                            <div className="text-xs text-[#555] mb-2">Total Portfolio Value</div>
+                            <div className="text-xs text-[#555] mb-2 font-medium uppercase tracking-wider">Total Portfolio Value</div>
                             <div className="flex items-baseline gap-4">
-                                <span className="text-3xl font-medium text-white tabular-nums">
+                                <span className="text-4xl font-bold text-white tabular-nums">
                                     ${totalValue.usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </span>
-                                <span className="text-sm text-[#666] tabular-nums">
+                                <span className="text-sm text-[#666] tabular-nums font-mono">
                                     {totalValue.sol.toFixed(2)} SOL
                                 </span>
                             </div>
                         </div>
 
                         {/* Holdings List */}
-                        <div className="border border-[#1a1a1a]">
-                            <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a1a1a]">
-                                <span className="text-sm font-medium text-white">Holdings</span>
-                                <span className="text-xs text-[#555]">{holdings.length} tokens</span>
+                        <div className="border border-[#1a1a1a] bg-[#050505]">
+                            <div className="flex items-center justify-between px-6 py-4 border-b border-[#1a1a1a]">
+                                <span className="text-sm font-bold text-white uppercase tracking-widest">Your Holdings</span>
+                                <span className="text-xs text-[#555] font-mono">{holdings.length} assets</span>
                             </div>
 
                             {isLoading ? (
-                                <div className="flex items-center justify-center py-12">
-                                    <div className="text-xs text-[#555]">Loading holdings...</div>
+                                <div className="flex flex-col items-center justify-center py-20 gap-3">
+                                    <div className="w-6 h-6 border-2 border-[#1a1a1a] border-t-white rounded-full animate-spin" />
+                                    <div className="text-[10px] text-[#555] uppercase tracking-widest">Fetching from Helius...</div>
                                 </div>
                             ) : holdings.length === 0 ? (
-                                <div className="flex items-center justify-center py-12">
-                                    <div className="text-xs text-[#555]">No pump.fun tokens found</div>
+                                <div className="flex items-center justify-center py-20">
+                                    <div className="text-xs text-[#555] uppercase tracking-widest">No assets detected</div>
                                 </div>
                             ) : (
                                 <div className="divide-y divide-[#1a1a1a]">
                                     {holdings.map((holding) => (
-                                        <div key={holding.mint} className="flex items-center justify-between p-4 hover:bg-[#0a0a0a]">
+                                        <div key={holding.mint} className="flex items-center justify-between px-6 py-5 hover:bg-white/[0.02] transition-colors group">
                                             <div className="flex items-center gap-4">
                                                 {/* Token Icon */}
-                                                <div className="w-10 h-10 bg-[#111] border border-[#222] flex items-center justify-center overflow-hidden">
+                                                <div className="w-12 h-12 bg-black border border-[#1a1a1a] flex items-center justify-center overflow-hidden grayscale group-hover:grayscale-0 transition-all">
                                                     {holding.imageUri ? (
                                                         <img src={holding.imageUri} alt={holding.symbol} className="w-full h-full object-cover" />
                                                     ) : (
-                                                        <span className="text-xs text-[#666]">{holding.symbol.slice(0, 2)}</span>
+                                                        <span className="text-xs text-[#666] font-mono">{holding.symbol.slice(0, 2)}</span>
                                                     )}
                                                 </div>
 
                                                 {/* Token Info */}
                                                 <div>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-white font-medium">{holding.symbol}</span>
+                                                        <span className="text-white font-bold">{holding.symbol}</span>
                                                     </div>
-                                                    <div className="text-xs text-[#555]">
-                                                        {holding.balance.toLocaleString(undefined, { maximumFractionDigits: 2 })} tokens
+                                                    <div className="text-[10px] text-[#555] font-mono mt-0.5">
+                                                        {holding.balance.toLocaleString(undefined, { maximumFractionDigits: 2 })} UNITS
                                                     </div>
                                                 </div>
                                             </div>
 
                                             {/* Value & Actions */}
-                                            <div className="flex items-center gap-6">
+                                            <div className="flex items-center gap-8">
                                                 <div className="text-right">
-                                                    <div className="text-white font-medium tabular-nums">
-                                                        ${holding.valueUsd.toFixed(2)}
+                                                    <div className="text-white font-bold tabular-nums">
+                                                        ${holding.valueUsd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                     </div>
-                                                    <div className={`text-xs tabular-nums ${holding.change24h >= 0 ? 'text-[#888]' : 'text-[#666]'}`}>
+                                                    <div className={`text-[10px] tabular-nums font-mono ${holding.change24h >= 0 ? 'text-[#888]' : 'text-red-900'}`}>
                                                         {holding.change24h >= 0 ? '+' : ''}{holding.change24h.toFixed(1)}%
                                                     </div>
                                                 </div>
 
                                                 <button
                                                     onClick={() => handleSell(holding)}
-                                                    className="px-3 py-1.5 text-xs border border-[#333] text-[#888] hover:border-white hover:text-white transition-colors"
+                                                    className="px-4 py-2 text-[10px] font-bold border border-[#1a1a1a] text-[#555] hover:border-white hover:text-white transition-all uppercase tracking-widest"
                                                 >
-                                                    Sell
+                                                    Liquidate
                                                 </button>
                                             </div>
                                         </div>
@@ -208,12 +209,17 @@ export default function PortfolioPage() {
             {selectedToken && (
                 <TradeModal
                     token={{
-                        ...selectedToken,
-                        marketCapSol: 0,
+                        mint: selectedToken.mint,
+                        symbol: selectedToken.symbol,
+                        name: selectedToken.name,
+                        imageUri: selectedToken.imageUri,
+                        marketCapSol: 0, // Not available from Helius balance
                         marketCapUsd: 0,
-                        priceSol: 0,
+                        priceUsd: selectedToken.priceUsd,
+                        priceSol: selectedToken.priceSol,
                         priceChange1h: 0,
                         priceChange24h: selectedToken.change24h,
+                        bondingCurveProgress: selectedToken.bondingCurveProgress,
                         virtualSolReserves: 0,
                         virtualTokenReserves: 0,
                         volume24h: 0,
@@ -230,10 +236,8 @@ export default function PortfolioPage() {
                         createdAt: Date.now(),
                         creator: '',
                         dexPaid: false,
-                        algoScore: { overall: 50, confidence: 'MEDIUM', verdict: 'NEUTRAL', factors: [] },
-                        pumpDumpAnalysis: { isPotentialPumpDump: false, riskLevel: 'NONE', signals: [], recommendation: '' },
-                        profitAnalysis: { potential: 'MEDIUM', targetGain: '', riskReward: '', timing: '', reasoning: [] },
-                    } as TokenWithAnalysis}
+                        status: selectedToken.status,
+                    } as Token}
                     onClose={() => setSelectedToken(null)}
                 />
             )}

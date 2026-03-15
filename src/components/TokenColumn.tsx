@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { Token, TokenFilters } from '@/lib/types';
 import { TokenCard } from './TokenCard';
 import { FilterPanel } from './FilterPanel';
@@ -18,22 +18,26 @@ interface TokenColumnProps {
 }
 
 function useTokenSearch(tokens: Token[], searchTerm: string) {
-    if (!searchTerm.trim()) return tokens;
-    const term = searchTerm.toLowerCase();
-    return tokens.filter(t =>
-        t.symbol.toLowerCase().includes(term) ||
-        t.name.toLowerCase().includes(term)
-    );
+    return useMemo(() => {
+        if (!searchTerm.trim()) return tokens;
+        const term = searchTerm.toLowerCase();
+        return tokens.filter(t =>
+            t.symbol.toLowerCase().includes(term) ||
+            t.name.toLowerCase().includes(term)
+        );
+    }, [tokens, searchTerm]);
 }
 
 function useSortedWithFavorites(tokens: Token[], favorites: string[]) {
-    return [...tokens].sort((a, b) => {
-        const aFav = favorites.includes(a.mint);
-        const bFav = favorites.includes(b.mint);
-        if (aFav && !bFav) return -1;
-        if (!aFav && bFav) return 1;
-        return 0;
-    });
+    return useMemo(() => {
+        return [...tokens].sort((a, b) => {
+            const aFav = favorites.includes(a.mint);
+            const bFav = favorites.includes(b.mint);
+            if (aFav && !bFav) return -1;
+            if (!aFav && bFav) return 1;
+            return 0;
+        });
+    }, [tokens, favorites]);
 }
 
 const SORT_OPTIONS = [
@@ -66,8 +70,8 @@ export function TokenColumn({
     };
 
     return (
-        <div className="flex flex-col h-full border-r border-[var(--border)] last:border-r-0">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-black/50 backdrop-blur-sm sticky top-0 z-10">
+        <div className="flex flex-col h-full border-r border-[var(--border)] last:border-r-0 overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-black/50 backdrop-blur-sm sticky top-0 z-10 shrink-0">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                     <h2 className="text-[var(--text-sm)] font-medium text-white flex items-center gap-2 shrink-0">
                         {title}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import type { Token } from '@/lib/types';
 import { useToast } from '@/hooks/useToast';
 import { useFavoritesStore } from '@/stores/favoritesStore';
@@ -11,7 +11,7 @@ interface TokenCardProps {
     isSelected?: boolean;
 }
 
-export function TokenCard({ token, onSelect, isSelected = false }: TokenCardProps) {
+export const TokenCard = memo(function TokenCard({ token, onSelect, isSelected = false }: TokenCardProps) {
     const [copied, setCopied] = useState(false);
     const { showToast } = useToast();
     const { isFavorite, toggleFavorite } = useFavoritesStore();
@@ -39,12 +39,22 @@ export function TokenCard({ token, onSelect, isSelected = false }: TokenCardProp
         showToast(isFav ? 'Removed from watchlist' : 'Added to watchlist', 'info');
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelect(token);
+        }
+    };
+
     return (
-        <button
+        <div
+            role="button"
+            tabIndex={0}
             onClick={() => onSelect(token)}
+            onKeyDown={handleKeyDown}
             onContextMenu={handleRightClick}
             className={`
-                relative w-full text-left p-4 bg-[var(--card)] border transition-all duration-200 group
+                relative w-full text-left p-4 bg-[var(--card)] border transition-all duration-200 group cursor-pointer
                 ${isSelected
                     ? 'border-emerald-500 bg-emerald-500/5 shadow-[var(--shadow-glow)]'
                     : 'border-[var(--border)] hover:border-[var(--border-light)] hover:bg-[var(--hover)]'
@@ -52,6 +62,7 @@ export function TokenCard({ token, onSelect, isSelected = false }: TokenCardProp
                 ${copied ? 'border-emerald-500/50' : ''}
                 ${isFav ? 'border-l-2 border-l-yellow-500' : ''}
             `}
+            style={{ contentVisibility: 'auto', containIntrinsicSize: '0 140px' }}
         >
             <button
                 onClick={handleFavoriteClick}
@@ -138,9 +149,9 @@ export function TokenCard({ token, onSelect, isSelected = false }: TokenCardProp
                     {copied ? '✓ Copied' : 'View →'}
                 </span>
             </div>
-        </button>
+        </div>
     );
-}
+});
 
 function formatAge(createdAt: number): string {
     const now = Date.now();

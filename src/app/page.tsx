@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Header } from '@/components/Header';
 import { Navigation } from '@/components/Navigation';
 import { TokenColumn } from '@/components/TokenColumn';
@@ -34,7 +34,11 @@ export default function Home() {
   const filteredFinalStretch = useFilteredTokens(finalStretchAnalyzed, finalStretchFilters);
   const filteredMigrated = useFilteredTokens(migratedAnalyzed, migratedFilters);
 
-  const allTokens = [...filteredNewPairs, ...filteredFinalStretch, ...filteredMigrated];
+  const allTokens = useMemo(() => 
+    [...filteredNewPairs, ...filteredFinalStretch, ...filteredMigrated],
+    [filteredNewPairs, filteredFinalStretch, filteredMigrated]
+  );
+
   const [navIndex, setNavIndex] = useState(-1);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {

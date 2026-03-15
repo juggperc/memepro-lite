@@ -5,11 +5,6 @@ import { fetchAllTokens } from '@/lib/api/pumpfun';
 
 export const maxDuration = 60;
 
-const openrouter = createOpenAI({
-  baseURL: 'https://openrouter.ai/api/v1',
-  apiKey: process.env.OPENROUTER_API_KEY || 'dummy_key',
-});
-
 const SYSTEM_PROMPT = `You are an elite memecoin researcher and AI agent integrated directly into the memepro.lite platform.
 Your primary objective is to help users identify high-potential tokens, analyze market trends, and make informed trading decisions.
 
@@ -25,10 +20,6 @@ Format responses in Markdown. Analysis is not financial advice.`;
 
 async function fetchMCPTools(url: string) {
   try {
-    // SSE MCP servers typically have a POST endpoint for JSON-RPC
-    // For simplicity in this Lite app, we assume the provided URL is the JSON-RPC endpoint 
-    // or we can try to discover tools. Standard MCP discovery is complex, 
-    // so we'll implement a basic version that expects standard JSON-RPC tools/list.
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -51,7 +42,18 @@ async function fetchMCPTools(url: string) {
 
 export async function POST(req: Request) {
   try {
-    const { messages, modelId, mcpServers = [] } = await req.json();
+    const { messages, modelId, openRouterKey, mcpServers = [] } = await req.json();
+
+    const apiKey = openRouterKey || process.env.OPENROUTER_API_KEY;
+    
+    if (!apiKey) {
+      return new Response(JSON.stringify({ error: 'OpenRouter API Key is required' }), { status: 400 });
+    }
+
+    const openrouter = createOpenAI({
+      baseURL: 'https://openrouter.ai/api/v1',
+      apiKey: apiKey,
+    });
 
     let openRouterModelId = 'anthropic/claude-3.5-sonnet';
     if (modelId === 'Opus 4.6') {
@@ -64,7 +66,6 @@ export async function POST(req: Request) {
       openRouterModelId = modelId;
     }
 
-    // 1. Build dynamic tools object starting with native tools
     const tools: any = {
       get_sol_price: tool({
         description: 'Get the current price of Solana (SOL) in USD.',
@@ -107,15 +108,12 @@ export async function POST(req: Request) {
       }),
     };
 
-    // 2. Dynamically add user-supplied MCP tools
     for (const serverUrl of mcpServers) {
       const externalTools = await fetchMCPTools(serverUrl);
       for (const t of externalTools) {
-        // Map MCP tool definition to AI SDK tool
-        // Note: This is a simplified mapping. Real MCP tools use JSON Schema.
         tools[`mcp_${t.name}`] = tool({
           description: t.description || 'External MCP tool',
-          parameters: z.any(), // In a real app, convert t.inputSchema to Zod
+          parameters: z.any(),
           // @ts-expect-error dynamic tool execution
           execute: async (args) => {
             const res = await fetch(serverUrl, {

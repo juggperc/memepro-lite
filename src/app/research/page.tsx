@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useChat } from '@ai-sdk/react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -24,31 +24,35 @@ interface MCPServer {
 export default function ResearchPage() {
     const [selectedModel, setSelectedModel] = useState('Opus 4.6');
     const [customModelId, setCustomModelId] = useState('');
+    const [openRouterKey, setOpenRouterKey] = useState('');
     const [showMCPSettings, setShowMCPSettings] = useState(false);
     const [mcpServers, setMCPServers] = useState<MCPServer[]>([]);
     const [newMCPServer, setNewMCPServer] = useState({ name: '', url: '' });
 
-    // Load MCP servers from localStorage
+    // Load settings from localStorage
     useEffect(() => {
-        const saved = localStorage.getItem('memepro_mcp_servers');
-        if (saved) {
-            try {
-                setMCPServers(JSON.parse(saved));
-            } catch (e) {
-                console.error('Failed to load MCP servers');
-            }
+        const savedMCP = localStorage.getItem('memepro_mcp_servers');
+        if (savedMCP) {
+            try { setMCPServers(JSON.parse(savedMCP)); } catch (e) {}
         }
+        const savedKey = localStorage.getItem('memepro_openrouter_key');
+        if (savedKey) setOpenRouterKey(savedKey);
     }, []);
 
-    // Save MCP servers to localStorage
+    // Save settings to localStorage
     useEffect(() => {
         localStorage.setItem('memepro_mcp_servers', JSON.stringify(mcpServers));
     }, [mcpServers]);
+
+    useEffect(() => {
+        localStorage.setItem('memepro_openrouter_key', openRouterKey);
+    }, [openRouterKey]);
 
     const chatHelpers = useChat({
         api: '/api/research/chat',
         body: {
             modelId: selectedModel === 'custom' ? customModelId : selectedModel,
+            openRouterKey,
             mcpServers: mcpServers.filter(s => s.enabled).map(s => s.url)
         }
     } as any) as any;
@@ -93,10 +97,18 @@ export default function ResearchPage() {
                         <h1 className="text-xl font-bold font-mono tracking-widest uppercase flex items-center gap-2">
                             <span className="text-emerald-500">⚡</span> AI Researcher
                         </h1>
-                        <p className="text-xs text-[#666] mt-1">Pump.fun + Helius + User MCP Support</p>
+                        <p className="text-xs text-[#666] mt-1">Platform Tools + User MCP + User API Keys</p>
                     </div>
 
                     <div className="flex items-center gap-3">
+                        <input 
+                            type="password"
+                            value={openRouterKey}
+                            onChange={(e) => setOpenRouterKey(e.target.value)}
+                            placeholder="OpenRouter API Key"
+                            className="bg-[#0a0a0a] border border-[#1a1a1a] text-[10px] px-3 py-1.5 rounded focus:border-[#444] focus:outline-none w-40 font-mono"
+                        />
+
                         <button 
                             onClick={() => setShowMCPSettings(!showMCPSettings)}
                             className={`text-[10px] uppercase font-bold px-3 py-1.5 border transition-all ${showMCPSettings ? 'bg-emerald-500 border-emerald-500 text-black' : 'border-[#222] text-[#666] hover:text-white'}`}
@@ -178,7 +190,21 @@ export default function ResearchPage() {
 
                 {/* Chat Area */}
                 <div className="flex-1 overflow-y-auto mb-4 border border-[#1a1a1a] bg-[#050505] rounded-lg p-4 space-y-6 scrollbar-hide">
-                    {messages.length === 0 ? (
+                    {!openRouterKey ? (
+                        <div className="h-full flex flex-col items-center justify-center text-[#555] space-y-4 text-center">
+                            <div className="w-16 h-16 border border-[#222] flex items-center justify-center rounded-full bg-black">
+                                <span className="text-2xl">🔑</span>
+                            </div>
+                            <div>
+                                <p className="text-sm font-mono max-w-md mx-auto">
+                                    Please provide an OpenRouter API key to begin.
+                                </p>
+                                <p className="text-[10px] text-[#444] mt-2 max-w-sm mx-auto uppercase tracking-wider">
+                                    Your key is stored locally and never leaves your browser except to our backend for AI calls.
+                                </p>
+                            </div>
+                        </div>
+                    ) : messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-[#555] space-y-4 text-center">
                             <div className="w-16 h-16 border border-[#222] flex items-center justify-center rounded-full bg-black">
                                 <span className="text-2xl">🧠</span>
@@ -259,13 +285,13 @@ export default function ResearchPage() {
                     <input
                         value={input}
                         onChange={handleInputChange}
-                        placeholder="Ask the researcher..."
+                        placeholder={openRouterKey ? "Ask the researcher..." : "Provide API key above to start"}
                         className="w-full bg-[#0a0a0a] border border-[#222] text-sm text-white px-4 py-4 rounded-lg focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 transition-all pr-12 placeholder-[#444]"
-                        disabled={isLoading}
+                        disabled={isLoading || !openRouterKey}
                     />
                     <button 
                         type="submit" 
-                        disabled={isLoading || !input || !input.trim()}
+                        disabled={isLoading || !openRouterKey || !input || !input.trim()}
                         className="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center bg-white text-black rounded-md hover:bg-[#ccc] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

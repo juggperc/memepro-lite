@@ -13,6 +13,7 @@ export function Navigation() {
     const tabs = [
         { name: 'Stream', path: '/' },
         { name: 'Portfolio', path: '/portfolio' },
+        { name: 'Researcher', path: '/research' },
         { name: 'Settings', path: '/settings' },
     ];
 
